@@ -24,7 +24,7 @@ public class SyncTask {
     private SyncService syncService;
 
     // 1. 定时维护 芒果在线机器列表
-    @Scheduled(cron = "0 0/30 * * * ? ")
+    @Scheduled(cron = "0 0/10 * * * ? ")
     public void maintainOnlineMachine() {
         log.info("SyncTask maintainOnlineMachine");
         syncService.maintainMachines();
@@ -34,7 +34,8 @@ public class SyncTask {
     /**
      *
      */
-    @Scheduled(cron = "0 0 0/1 * * ? ")
+    @Scheduled(cron = "0 0/30 * * * ? ")
+//    @Scheduled(cron = "0 0 0/1 * * ? ")
     public void sync() {
         log.info("SyncTask sync");
         List<TMgtvAccesslogMachine> onlineMachines = syncService.getOnlineMachines();
