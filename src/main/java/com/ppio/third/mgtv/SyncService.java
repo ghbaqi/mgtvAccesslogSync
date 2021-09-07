@@ -35,9 +35,6 @@ import java.util.List;
 
 /**
  *
- *
- *
- *
  */
 @Service
 @Slf4j
@@ -231,6 +228,12 @@ public class SyncService {
             conn.close();
         } catch (Exception e) {
             log.error("查询 hologres e = {}", e);
+        }
+
+        // 除了判断线上的机器 ，还要对 已经入库的机器再次判断
+        List<TMgtvAccesslogMachine> exitMachines = machineMapper.getOnlineMachines();
+        if (exitMachines != null && exitMachines.size() > 0) {
+            onlineMachines.addAll(exitMachines);
         }
 
 
