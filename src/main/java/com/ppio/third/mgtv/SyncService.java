@@ -6,12 +6,15 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.ppio.third.mgtv.bean.AccessUrlBean;
 import com.ppio.third.mgtv.entity.TMgtvAccesslogItems;
 import com.ppio.third.mgtv.entity.TMgtvAccesslogMachine;
+import com.ppio.third.mgtv.entity.TThirdMgtvQuality;
 import com.ppio.third.mgtv.mapper.TMgtvAccesslogItemsMapper;
 import com.ppio.third.mgtv.mapper.TMgtvAccesslogMachineMapper;
+import com.ppio.third.mgtv.mapper.TThirdMgtvQualityMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.postgresql.core.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,17 +23,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.print.DocFlavor;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -263,6 +270,63 @@ public class SyncService {
                 existMachine.setEnable(enable);
                 machineMapper.updateByPrimaryKey(existMachine);
             }
+        }
+
+    }
+
+
+    @Autowired
+    private TThirdMgtvQualityMapper qualityMapper;
+
+    /**
+     * 获取芒果 质量 接口数据
+     * <p>
+     * cHBpbzpVUDMyczd5MXUjTFhOJUtk
+     */
+    //-- 用户名：ppio
+    //-- 密码：UP32s7y1u#LXN%Kd
+    //-- 江苏移动质量数据地址:http://39.96.63.155/ppio-cmnet-jiangsu/quality.txt.latest
+    //-- 芒果质量 接口数据 。
+    //-- 湖南移动质量数据地址:http://39.96.63.155/ppio-cmnet-hunan/quality.txt.latest
+    //-- 河南联通质量数据地址:http://39.96.63.155/ppio-cnc-henan/quality.txt.latest
+    public void getQualityData(String url) {
+        Request.Builder builder = new Request.Builder();
+        builder.url(url);
+        builder.header("Authorization", "Basic cHBpbzpVUDMyczd5MXUjTFhOJUtk");
+        Request request = builder.build();
+
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            ResponseBody body = response.body();
+            InputStream is = body.byteStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = br.readLine();
+
+            // 2021-10-18 13:55:00	江苏	移动	PC-PPIO江苏移动	0.8%	0.16%
+            TThirdMgtvQuality quality = new TThirdMgtvQuality();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            while (line != null && !line.trim().equals("")) {
+//                System.out.println(line);
+
+                String[] arr = line.split("\t");
+                if (arr.length == 6) {
+                    quality.setTime(sdf.parse(arr[0]));
+                    quality.setResource(arr[3]);
+                    quality.setRegion(arr[1]);
+                    quality.setKdRatio(Double.valueOf(arr[4].replace("%", "")));
+                    quality.setIsp(arr[2]);
+                    quality.setErrorRatio(Double.valueOf(arr[5].replace("%", "")));
+                    qualityMapper.insert(quality);
+                }
+
+                line = br.readLine();
+            }
+
+            br.close();
+            is.close();
+        } catch (Exception e) {
+            log.error("质量接口错误 e  = {} , url = {}", e, url);
         }
 
     }

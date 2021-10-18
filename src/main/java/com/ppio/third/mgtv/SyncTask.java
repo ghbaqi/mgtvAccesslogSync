@@ -48,10 +48,21 @@ public class SyncTask {
                     }
                 }
             });
-
-
         }
+    }
 
+
+    // 获取质量接口数据
+    //-- 江苏移动质量数据地址:http://39.96.63.155/ppio-cmnet-jiangsu/quality.txt.latest
+    //-- 芒果质量 接口数据 。
+    //-- 湖南移动质量数据地址:http://39.96.63.155/ppio-cmnet-hunan/quality.txt.latest
+    //-- 河南联通质量数据地址:http://39.96.63.155/ppio-cnc-henan/quality.txt.latest
+    @Scheduled(cron = "0 0/5 * * * ? ")
+    public void getQualityData() {
+        log.info("SyncTask getQualityData");
+        syncService.getQualityData("http://39.96.63.155/ppio-cmnet-jiangsu/quality.txt.latest");
+        syncService.getQualityData("http://39.96.63.155/ppio-cmnet-hunan/quality.txt.latest");
+        syncService.getQualityData("http://39.96.63.155/ppio-cnc-henan/quality.txt.latest");
     }
 
 }
