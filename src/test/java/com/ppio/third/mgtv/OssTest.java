@@ -5,6 +5,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -14,14 +15,17 @@ import java.io.File;
 @RunWith(SpringRunner.class)
 public class OssTest {
 
+    @Value("${oss.access.key}")
+    private String accessKeyId;
+    @Value("${oss.access.secret}")
+    private String accessKeySecret;
+
     @Test
     public void t2() {
 
         // Endpoint以杭州为例，其它Region请按实际情况填写。
         String endpoint = "https://oss-cn-shanghai.aliyuncs.com";
 // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
-        String accessKeyId = "LTAI4GFy8z6y9KYpuGUpJQRU";
-        String accessKeySecret = "aCSMTvu2vJP2rfSFWYSxxgJUzevAr1";
         String bucketName = "mgtv-access-log";
 // <yourObjectName>上传文件到OSS时需要指定包含文件后缀在内的完整路径，例如abc/efg/123.jpg。
         String objectName = "1.txt";

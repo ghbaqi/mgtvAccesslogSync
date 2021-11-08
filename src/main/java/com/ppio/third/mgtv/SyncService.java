@@ -68,6 +68,11 @@ public class SyncService {
     @Value("${oss.bucket.name}")
     private String bucketName;
 
+    @Value("${oss.access.key}")
+    private String accessKeyId;
+    @Value("${oss.access.secret}")
+    private String accessKeySecret;
+
 
     /**
      * 同步一个 access log 到 oss  上
@@ -215,7 +220,7 @@ public class SyncService {
         List<TMgtvAccesslogMachine> onlineMachines = new ArrayList<>();
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql://hgmc-cn-st21vo0do001-cn-hangzhou.hologres.aliyuncs.com:80/db_prd?preferQueryMode=simple&tcpKeepAlive=true", "LTAI4GFy8z6y9KYpuGUpJQRU", "aCSMTvu2vJP2rfSFWYSxxgJUzevAr1");
+            conn = DriverManager.getConnection("jdbc:postgresql://hgmc-cn-st21vo0do001-cn-hangzhou.hologres.aliyuncs.com:80/db_prd?preferQueryMode=simple&tcpKeepAlive=true", accessKeyId, accessKeySecret);
 //            System.out.println("连接数据库成功!");
             stmt = conn.createStatement();
 //            ResultSet rs = stmt.executeQuery("select * from t_ads_business_bw_allocated where dt = '20201001' limit 10;");

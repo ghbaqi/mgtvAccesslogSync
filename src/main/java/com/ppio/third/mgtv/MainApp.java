@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * nohup java -jar -Dspring.profiles.active=prd    mgtvAccesslogSync-1.0-SNAPSHOT.jar > /dev/null 2>&1  &
+ * nohup java -jar -Dspring.profiles.active=prd -Doss.access.key=--- -Doss.access.secret=--    mgtvAccesslogSync-1.0-SNAPSHOT.jar > /dev/null 2>&1  &
  * <p>
  * prd 部署在机器
  * /opt/iaas/mgtvAccesslogSync

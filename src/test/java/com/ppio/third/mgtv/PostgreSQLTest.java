@@ -15,7 +15,7 @@ public class PostgreSQLTest {
             Class.forName("org.postgresql.Driver");
 
 //            System.out.println(Driver.class.getName());
-            conn = DriverManager.getConnection("jdbc:postgresql://hgmc-cn-st21vo0do001-cn-hangzhou.hologres.aliyuncs.com:80/db_test?preferQueryMode=simple&tcpKeepAlive=true", "LTAI4GFy8z6y9KYpuGUpJQRU", "aCSMTvu2vJP2rfSFWYSxxgJUzevAr1");
+            conn = DriverManager.getConnection("jdbc:postgresql://hgmc-cn-st21vo0do001-cn-hangzhou.hologres.aliyuncs.com:80/db_prd?preferQueryMode=simple&tcpKeepAlive=true", "----", "----");
             System.out.println("连接数据库成功!");
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("select * from t_ads_business_bw_allocated where dt = '20201001' limit 10;");
