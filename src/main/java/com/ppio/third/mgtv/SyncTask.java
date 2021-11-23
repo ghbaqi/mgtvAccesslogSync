@@ -64,6 +64,11 @@ public class SyncTask {
         syncService.getQualityData("http://39.96.63.155/ppio-cmnet-hunan/quality.txt.latest");
         syncService.getQualityData("http://39.96.63.155/ppio-cnc-henan/quality.txt.latest");
         syncService.getQualityData("http://39.96.63.155/ppio-cnc-hebei/quality.txt.latest");
+        // 辽宁
+        syncService.getQualityData("http://39.96.63.155/ppio-cnc-liaoning/quality.txt.latest");
+
+
+
     }
 
 }
