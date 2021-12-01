@@ -138,6 +138,8 @@ public class SyncService {
             accesslogItemsMapper.updateByPrimaryKey(existlogItem);
             log.info("success machine = {} , url = {}", machineId, url);
             // 成功状态维护
+            if (response != null)
+                response.close();
         } catch (Exception e) {
             existlogItem.setStatus(UploadStatusEnum.Failure.getStatus());
             accesslogItemsMapper.updateByPrimaryKey(existlogItem);
@@ -174,10 +176,12 @@ public class SyncService {
                 byte[] bytes = response.body().bytes();
                 String listJsonStr = new String(bytes);
                 urlBeans = JSON.parseArray(listJsonStr, AccessUrlBean.class);
+
             } else {
                 log.error("获取 access 文件列表错误1 ，machine = {} , response = {} ", machine, response.toString());
             }
-
+            if (response != null)
+                response.close();
         } catch (Exception e) {
             log.error("获取 access 文件列表错误2 ，error =  {} ", e);
 
@@ -264,6 +268,8 @@ public class SyncService {
                 if (response.isSuccessful() && response.code() == 200) {
                     enable = true;
                 }
+                if (response != null)
+                    response.close();
             } catch (IOException e) {
                 enable = false;
             }
@@ -312,17 +318,22 @@ public class SyncService {
             TThirdMgtvQuality quality = new TThirdMgtvQuality();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             while (line != null && !line.trim().equals("")) {
-//                System.out.println(line);
+                System.out.println(line);
 
                 String[] arr = line.split("\t");
-                if (arr.length == 6) {
+//                System.out.println("arr length " + arr.length);
+
+                // 2021-11-29 00:20:00	PC-PPIO河南联通	0.66%	0%
+                if (arr.length == 4) {
                     quality.setTime(sdf.parse(arr[0]));
-                    quality.setResource(arr[3]);
-                    quality.setRegion(arr[1]);
-                    quality.setKdRatio(Double.valueOf(arr[4].replace("%", "")));
-                    quality.setIsp(arr[2]);
-                    quality.setErrorRatio(Double.valueOf(arr[5].replace("%", "")));
+                    quality.setResource(arr[1]);
+//                    quality.setRegion(arr[1]);
+                    quality.setKdRatio(Double.valueOf(arr[2].replace("%", "")));
+//                    quality.setIsp(arr[2]);
+                    quality.setErrorRatio(Double.valueOf(arr[3].replace("%", "")));
                     qualityMapper.insert(quality);
+
+//                    System.out.println(quality);
                 }
 
                 line = br.readLine();
@@ -330,6 +341,8 @@ public class SyncService {
 
             br.close();
             is.close();
+            if (response != null)
+                response.close();
         } catch (Exception e) {
             log.error("质量接口错误 e  = {} , url = {}", e, url);
         }

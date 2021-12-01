@@ -67,6 +67,10 @@ public class SyncTask {
         // 辽宁
         syncService.getQualityData("http://39.96.63.155/ppio-cnc-liaoning/quality.txt.latest");
 
+        // 河北电信	http://39.96.63.155/ppio-ct-hebei/quality.txt.latest
+        // 陕西移动	http://39.96.63.155/ppio-cmnet-shanxi/quality.txt.latest
+        syncService.getQualityData("http://39.96.63.155/ppio-ct-hebei/quality.txt.latest");
+        syncService.getQualityData("http://39.96.63.155/ppio-cmnet-shanxi/quality.txt.latest");
 
 
     }
